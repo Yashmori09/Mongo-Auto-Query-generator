@@ -1,0 +1,7 @@
+h2o-wave
+openai
+python-dotenv
+pymongo[srv]
+streamlit_chat
+streamlit_extras
+pandas

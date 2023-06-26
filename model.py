@@ -60,27 +60,16 @@ class OpenAi(SchemaGen):
         You are provided with the the question and answer set of the the complex questions and their answers as mongodb query.
         {question_set} and also schema of collection{schema} 
         """
-        user = f"""
-        You will be provided with text delimited by triple quotes. 
+        user = f""" 
         {info}
         Learn the relations between the collections and also the details from the given set of questions and answer the given question below in the mongodb query.
 
         Question:{question}
 
-        answer the question the in the given format:
-        your answer
-
-        Before answering check in the required field of the schema that whether the question can be solved with the given column names given required field of schema.
-        if not there than answer in following way:
-        not valid
-
-        also check the answer logically and syntactically once whether is correct or not.
-        If you are not sure than answer in following way:
-        Not sure
-
-
-
-        Also dont use ``` ```
+        your answer should be only mongodb compass query \n
+        every words inside the list and dict after 'aggregate' should be in inverted commas(' '))\n
+        no extra explanation is needed.\n
+        Also dont use triple quotes(''' ''') in answer\n
 
         """
         messages2 = [
