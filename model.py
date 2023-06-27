@@ -2,15 +2,15 @@ from schema_gen import SchemaGen
 import os
 import openai
 from dotenv import load_dotenv, find_dotenv
-
+from constant import *
 
 class OpenAi(SchemaGen):
     def __init__(self) -> None:
         super().__init__()
-        _ = load_dotenv(find_dotenv('openai.env')) # read local .env file
+        _ = load_dotenv(find_dotenv(OPENAI_ENV)) # read local .env file
         openai.api_key  = os.environ['OPENAI_API_KEY']
 
-    def get_completion(self,messages, model="gpt-3.5-turbo"):
+    def get_completion(self,messages, model=MODEL):
         response = openai.ChatCompletion.create(
             model=model,
             messages=messages,
@@ -69,7 +69,7 @@ class OpenAi(SchemaGen):
         your answer should be only mongodb compass query \n
         every words inside the list and dict after 'aggregate' should be in inverted commas(' '))\n
         no extra explanation is needed.\n
-        Also dont use triple quotes(''' ''') in answer\n
+        Also dont use triple quotes(``` ```) in answer\n
 
         """
         messages2 = [

@@ -3,7 +3,7 @@ from pymongo import MongoClient
 
 
 class Base:
-    __FILE__ = 'config.ini'
+    __FILE__ = 'config-local.ini'
 
     def __init__(self) -> None:
         self.cfg = self.setup_config()

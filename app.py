@@ -2,11 +2,22 @@ from h2o_wave import main, app, Q, ui
 from model import OpenAi
 from query_to_data import retrieve
 import pandas as pd
+import os
+from constant import *
 
 
 obj=OpenAi()
-questions=obj.question_gen()
+
 datafrm=retrieve()
+
+if os.path.exists(QUESTION_SET_FILE_PATH)==False:
+    questions=obj.question_gen()
+    with open(QUESTION_SET_FILE_PATH, 'w') as file:
+        file.write(questions)
+else:
+    with open(QUESTION_SET_FILE_PATH, 'r') as file:
+        questions=file.read()
+        print(questions)
 
 @app('/')
 async def serve(q: Q):
@@ -53,6 +64,7 @@ def intitial_state(q,questions):
             
         )
         query=obj.user_answer_gen(questions,q.args.SearchBox)
+        print(query)
         df= dataframe(query)
         
         q.page['table_view']=ui.form_card(
@@ -75,6 +87,7 @@ def intitial_state(q,questions):
 
 def dataframe(query):
     answer=datafrm.query_data(query)
+    print(answer)
     df=pd.DataFrame(answer)
 
     return df
