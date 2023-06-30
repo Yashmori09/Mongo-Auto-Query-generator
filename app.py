@@ -17,7 +17,7 @@ if os.path.exists(QUESTION_SET_FILE_PATH)==False:
 else:
     with open(QUESTION_SET_FILE_PATH, 'r') as file:
         questions=file.read()
-        print(questions)
+        # print(questions)
 
 @app('/')
 async def serve(q: Q):
@@ -64,7 +64,7 @@ def intitial_state(q,questions):
             
         )
         query=obj.user_answer_gen(questions,q.args.SearchBox)
-        print(query)
+        # print(query)
         df= dataframe(query)
         
         q.page['table_view']=ui.form_card(

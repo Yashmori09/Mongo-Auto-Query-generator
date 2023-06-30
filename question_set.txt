@@ -1,98 +1,145 @@
-Q1: Find all customers who have at least one account with a limit greater than 10000.
+Q1: Find all the customers who have an active account.
 
-A1: db.customers.find({"accounts.limit": {$gt: 10000}})
+A1: db.customers.find({active: true})
 
+Q2: Find all the customers who have a tier level of 'Gold'.
 
-Q2: Find all transactions where the transaction amount is greater than 5000 and the transaction code is "BUY".
+A2: db.customers.find({"tier_and_details.tier": "Gold"})
 
-A2: db.transactions.find({$and: [{"transactions.amount": {$gt: 5000}}, {"transactions.transaction_code": "BUY"}]})
+Q3: Find the total number of transactions made by each customer.
 
+A3: db.transactions.aggregate([
+     {$group: {_id: "$account_id", total_transactions: {$sum: 1}}}
+   ])
 
-Q3: Find the total number of transactions for each customer.
+Q4: Find the customers who have made transactions within a specific date range.
 
-A3: db.transactions.aggregate([{$group: {_id: "$account_id", total_transactions: {$sum: "$transaction_count"}}}])
+A4: db.customers.aggregate([
+     {$lookup: {
+         from: "transactions",
+         localField: "_id",
+         foreignField: "account_id",
+         as: "customer_transactions"
+     }},
+     {$match: {"customer_transactions.date": {$gte: ISODate("2022-01-01"), $lte: ISODate("2022-12-31")}}}
+   ])
 
+Q5: Find the customers who have made transactions with a specific transaction code.
 
-Q4: Find all customers who have an active account with a tier of "gold".
+A5: db.customers.aggregate([
+     {$lookup: {
+         from: "transactions",
+         localField: "_id",
+         foreignField: "account_id",
+         as: "customer_transactions"
+     }},
+     {$match: {"customer_transactions.transaction_code": "XYZ"}}
+   ])
 
-A4: db.customers.find({"tier_and_details.tier": "gold", "tier_and_details.active": true})
+Q6: Find the customers who have made transactions with a specific symbol.
 
+A6: db.customers.aggregate([
+     {$lookup: {
+         from: "transactions",
+         localField: "_id",
+         foreignField: "account_id",
+         as: "customer_transactions"
+     }},
+     {$match: {"customer_transactions.symbol": "ABC"}}
+   ])
 
-Q5: Find all transactions where the symbol is "AAPL" and the price is greater than 100.
+Q7: Find the customers who have made transactions with a specific price range.
 
-A5: db.transactions.find({"transactions.symbol": "AAPL", "transactions.price": {$gt: 100}})
+A7: db.customers.aggregate([
+     {$lookup: {
+         from: "transactions",
+         localField: "_id",
+         foreignField: "account_id",
+         as: "customer_transactions"
+     }},
+     {$match: {"customer_transactions.price": {$gte: "10", $lte: "100"}}}
+   ])
 
+Q8: Find the customers who have made transactions with a specific total amount range.
 
-Q6: Find the total number of transactions for each account.
+A8: db.customers.aggregate([
+     {$lookup: {
+         from: "transactions",
+         localField: "_id",
+         foreignField: "account_id",
+         as: "customer_transactions"
+     }},
+     {$match: {"customer_transactions.total": {$gte: "100", $lte: "1000"}}}
+   ])
 
-A6: db.transactions.aggregate([{$group: {_id: "$account_id", total_transactions: {$sum: "$transaction_count"}}}])
+Q9: Find the customers who have an account with a specific limit.
 
+A9: db.customers.find({"accounts.limit": 5000})
 
-Q7: Find all customers who have an account with a limit between 5000 and 10000.
+Q10: Find the customers who have an account with a specific product.
 
-A7: db.customers.find({"accounts.limit": {$gte: 5000, $lte: 10000}})
+A10: db.customers.find({"accounts.products": "Product A"})
 
+Q11: Find the customers who have an account with a specific product and limit.
 
-Q8: Find all transactions where the transaction date is between January 1, 2020 and March 31, 2020.
+A11: db.customers.find({"accounts.products": "Product A", "accounts.limit": 5000})
 
-A8: db.transactions.find({"transactions.date": {$gte: ISODate("2020-01-01"), $lte: ISODate("2020-03-31")}})
+Q12: Find the customers who have an account with a specific product and active status.
 
+A12: db.customers.find({"accounts.products": "Product A", "active": true})
 
-Q9: Find all customers who have an account with a product that contains the word "credit".
+Q13: Find the customers who have an account with a specific product, limit, and active status.
 
-A9: db.customers.find({"accounts.products": /credit/i})
+A13: db.customers.find({"accounts.products": "Product A", "accounts.limit": 5000, "active": true})
 
+Q14: Find the customers who have an account with a specific product and were born after a specific date.
 
-Q10: Find all transactions where the total is greater than 10000.
+A14: db.customers.find({"accounts.products": "Product A", "birthdate": {$gt: ISODate("1990-01-01")}})
 
-A10: db.transactions.find({"transactions.total": {$gt: 10000}})
+Q15: Find the customers who have an account with a specific product and have a tier level of 'Silver'.
 
+A15: db.customers.find({"accounts.products": "Product A", "tier_and_details.tier": "Silver"})
 
-Q11: Find all customers who have an account with an even account_id.
+Q16: Find the customers who have an account with a specific product and have a tier level of 'Silver' or 'Gold'.
 
-A11: db.customers.find({"account_id": {$mod: [2, 0]}})
+A16: db.customers.find({"accounts.products": "Product A", "tier_and_details.tier": {$in: ["Silver", "Gold"]}})
 
+Q17: Find the customers who have an account with a specific product and have a tier level of 'Silver' or 'Gold', and were born before a specific date.
 
-Q12: Find all transactions where the amount is a multiple of 100.
+A17: db.customers.find({"accounts.products": "Product A", "tier_and_details.tier": {$in: ["Silver", "Gold"]}, "birthdate": {$lt: ISODate("1990-01-01")}})
 
-A12: db.transactions.find({"transactions.amount": {$mod: [100, 0]}})
+Q18: Find the customers who have an account with a specific product and have a tier level of 'Silver' or 'Gold', and have made transactions within a specific date range.
 
+A18: db.customers.aggregate([
+     {$lookup: {
+         from: "transactions",
+         localField: "_id",
+         foreignField: "account_id",
+         as: "customer_transactions"
+     }},
+     {$match: {"accounts.products": "Product A", "tier_and_details.tier": {$in: ["Silver", "Gold"]}, "customer_transactions.date": {$gte: ISODate("2022-01-01"), $lte: ISODate("2022-12-31")}}}
+   ])
 
-Q13: Find the average transaction amount for each account.
+Q19: Find the customers who have an account with a specific product and have a tier level of 'Silver' or 'Gold', and have made transactions with a specific transaction code.
 
-A13: db.transactions.aggregate([{$group: {_id: "$account_id", avg_amount: {$avg: "$transactions.amount"}}}])
+A19: db.customers.aggregate([
+     {$lookup: {
+         from: "transactions",
+         localField: "_id",
+         foreignField: "account_id",
+         as: "customer_transactions"
+     }},
+     {$match: {"accounts.products": "Product A", "tier_and_details.tier": {$in: ["Silver", "Gold"]}, "customer_transactions.transaction_code": "XYZ"}}
+   ])
 
+Q20: Find the customers who have an account with a specific product and have a tier level of 'Silver' or 'Gold', and have made transactions with a specific symbol.
 
-Q14: Find all customers who have an account with a limit greater than 5000 and a product that contains the word "credit".
-
-A14: db.customers.find({"accounts.limit": {$gt: 5000}, "accounts.products": /credit/i})
-
-
-Q15: Find all transactions where the transaction date is in the year 2020 and the transaction code is "SELL".
-
-A15: db.transactions.find({"transactions.date": {$gte: ISODate("2020-01-01"), $lte: ISODate("2020-12-31")}, "transactions.transaction_code": "SELL"})
-
-
-Q16: Find all customers who have an account with a limit between 5000 and 10000 and an active tier.
-
-A16: db.customers.find({"accounts.limit": {$gte: 5000, $lte: 10000}, "tier_and_details.active": true})
-
-
-Q17: Find all transactions where the symbol is "AAPL" or "GOOG" and the price is greater than 100.
-
-A17: db.transactions.find({"transactions.symbol": {$in: ["AAPL", "GOOG"]}, "transactions.price": {$gt: 100}})
-
-
-Q18: Find the total number of transactions for each customer, sorted in descending order.
-
-A18: db.transactions.aggregate([{$group: {_id: "$account_id", total_transactions: {$sum: "$transaction_count"}}}, {$sort: {total_transactions: -1}}])
-
-
-Q19: Find all customers who have an account with a limit greater than 5000 and a tier of "gold".
-
-A19: db.customers.find({"accounts.limit": {$gt: 5000}, "tier_and_details.tier": "gold"})
-
-
-Q20: Find all transactions where the transaction date is in the year 2021 and the total is greater than 5000.
-
-A20: db.transactions.find({"transactions.date": {$gte: ISODate("2021-01-01"), $lte: ISODate("2021-12-31")}, "transactions.total": {$gt: 5000}})
+A20: db.customers.aggregate([
+     {$lookup: {
+         from: "transactions",
+         localField: "_id",
+         foreignField: "account_id",
+         as: "customer_transactions"
+     }},
+     {$match: {"accounts.products": "Product A", "tier_and_details.tier": {$in: ["Silver", "Gold"]}, "customer_transactions.symbol": "ABC"}}
+   ])

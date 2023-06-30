@@ -9,11 +9,17 @@ class retrieve(OpenAi,MongoDB):
         
     
     def query_data(self,query):
-        modified_query=query.replace('```','')
-        despaced_query=modified_query.replace(' ','')
-        modified_query_string = re.sub(r'([$a-zA-Z_][\w$]*)(?=:)', r"'\1'", despaced_query)
-        final_query='self.'+ modified_query_string
-        data=list(eval(final_query))
+        match = re.search(r'```([^`]*)```', query, re.DOTALL)
+        modified_query_string = re.sub(r'([$a-zA-Z_][\w$]*)(?=:)', r"'\1'",match.group(1))
+     
+        result =re.sub(r"(?s).*?\b(db.*)", r"\1", modified_query_string)
+
+        
+        final_query='self.'+ result
+        # print(final_query)
+        despace=final_query.replace(" ","")
+        # print(despace)
+        data=list(eval(despace))
         return data
 
 # if __name__=='__main__':

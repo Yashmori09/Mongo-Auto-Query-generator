@@ -1,9 +1,10 @@
 import configparser
 from pymongo import MongoClient
+from constant import*
 
 
 class Base:
-    __FILE__ = 'config-local.ini'
+    __FILE__ = CONFIG_FILE
 
     def __init__(self) -> None:
         self.cfg = self.setup_config()

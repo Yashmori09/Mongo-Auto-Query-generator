@@ -32,9 +32,9 @@ class OpenAi(SchemaGen):
         """
         user=f"""
         
-        You need to create 20 complex questions which can be answered by mongodb query.
+        You need to create 20 different complex questions which can be answered by mongodb query.
         You will be provided by a schema of database and along with some terminology of schema{information}.you have to use all the mongodb functions to generate the complex questions and answer.
-        the syntax and the logic of the answer to solve the generated  question should be very much perfect. no error should be found in the answer
+        the syntax and the logic of the answer to solve the generated  question should be very much perfect. Use all the collections given in schema to generate the questions. 
         provide the answer in following format:
         Q1:
         A1:
@@ -58,18 +58,17 @@ class OpenAi(SchemaGen):
         """
         info = f"""
         You are provided with the the question and answer set of the the complex questions and their answers as mongodb query.
-        {question_set} and also schema of collection{schema} 
+         and also schema of collection.
         """
         user = f""" 
         {info}
-        Learn the relations between the collections and also the details from the given set of questions and answer the given question below in the mongodb query.
+        Learn the relations between the collections{schema} and also the details from the given set of questions{question_set} and answer the given question below in the mongodb query.
 
         Question:{question}
 
-        your answer should be only mongodb compass query \n
-        every words inside the list and dict after 'aggregate' should be in inverted commas(' '))\n
-        no extra explanation is needed.\n
-        Also dont use triple quotes(``` ```) in answer\n
+        your answer should be only mongodb compass query and no extra explanation is needed.Use the given schema keys to generate the query  \n
+        Use Aggregate function.\n
+        Also query should be in triple delimiter(``` ```) \n
 
         """
         messages2 = [
