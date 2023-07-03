@@ -19,6 +19,6 @@ class MongoDB(Base):
 
     def __init__(self) -> None:
         super().__init__()
-        client = MongoClient(self.cfg.get('database3', 'uri'))
-        dbname = self.cfg.get('database3', 'dbname')
+        client = MongoClient(self.cfg.get('database4', 'uri'))
+        dbname = self.cfg.get('database4', 'dbname')
         self.db = client[dbname]

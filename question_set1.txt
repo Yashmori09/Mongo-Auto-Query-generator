@@ -1,0 +1,59 @@
+Q1: How many accounts have a limit greater than 500 and have at least one product?
+A1: db.accounts.find({ limit: { $gt: 500 }, products: { $exists: true, $not: { $size: 0 } } }).count()
+
+Q2: What is the total transaction count for all accounts?
+A2: db.transactions.aggregate([{ $group: { _id: null, totalTransactionCount: { $sum: "$transaction_count" } } }])
+
+Q3: Which customers have an address that contains the word "Street"?
+A3: db.customers.find({ address: { $regex: "Street", $options: "i" } })
+
+Q4: How many customers have a tier of "Gold" and an active status of true in their tier_and_details dictionary?
+A4: db.customers.find({ "tier_and_details.ceef1c11d473477e8aa9879a468b4108.tier": "Gold", "tier_and_details.ceef1c11d473477e8aa9879a468b4108.active": true }).count()
+
+Q5: What is the average amount of transactions for each account?
+A5: db.transactions.aggregate([{ $group: { _id: "$account_id", averageAmount: { $avg: "$amount" } } }])
+
+Q6: Which customers have a birthdate between "2000-01-01" and "2005-12-31"?
+A6: db.customers.find({ birthdate: { $gte: ISODate("2000-01-01"), $lte: ISODate("2005-12-31") } })
+
+Q7: How many transactions have a transaction code of "12345" and a symbol of "XYZ"?
+A7: db.transactions.find({ transaction_code: "12345", symbol: "XYZ" }).count()
+
+Q8: What are the names and email addresses of customers who have more than 3 accounts?
+A8: db.customers.find({ accounts: { $exists: true, $not: { $size: 0, $lte: 3 } } }, { name: 1, email: 1 })
+
+Q9: How many accounts have a product list that includes both "A" and "B"?
+A9: db.accounts.find({ products: { $all: ["A", "B"] } }).count()
+
+Q10: What is the maximum limit among all accounts?
+A10: db.accounts.aggregate([{ $group: { _id: null, maxLimit: { $max: "$limit" } } }])
+
+Q11: Which transactions have a price greater than or equal to 10 and a total less than or equal to 100?
+A11: db.transactions.find({ price: { $gte: "10" }, total: { $lte: "100" } })
+
+Q12: How many customers have a username starting with "user"?
+A12: db.customers.find({ username: { $regex: "^user", $options: "i" } }).count()
+
+Q13: What is the average transaction count for accounts with a limit greater than 1000?
+A13: db.accounts.aggregate([{ $match: { limit: { $gt: 1000 } } }, { $group: { _id: null, averageTransactionCount: { $avg: "$transaction_count" } } }])
+
+Q14: Which customers have an email address that ends with "@gmail.com"?
+A14: db.customers.find({ email: { $regex: "@gmail.com$", $options: "i" } })
+
+Q15: How many transactions have a date in the year 2020?
+A15: db.transactions.find({ date: { $gte: ISODate("2020-01-01"), $lt: ISODate("2021-01-01") } }).count()
+
+Q16: What are the names and addresses of customers who have a tier with the benefit "Free Shipping"?
+A16: db.customers.find({ "tier_and_details.ceef1c11d473477e8aa9879a468b4108.benefits": "Free Shipping" }, { name: 1, address: 1 })
+
+Q17: How many accounts have a limit less than 200 or do not have any products?
+A17: db.accounts.find({ $or: [{ limit: { $lt: 200 } }, { products: { $exists: false } }] }).count()
+
+Q18: What is the total amount of transactions for each account?
+A18: db.transactions.aggregate([{ $group: { _id: "$account_id", totalAmount: { $sum: "$amount" } } }])
+
+Q19: Which customers have a birthdate after "1990-01-01" and an email address that contains the word "example"?
+A19: db.customers.find({ birthdate: { $gt: ISODate("1990-01-01") }, email: { $regex: "example", $options: "i" } })
+
+Q20: How many transactions have a symbol that starts with "ABC"?
+A20: db.transactions.find({ symbol: { $regex: "^ABC", $options: "i" } }).count()

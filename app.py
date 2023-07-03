@@ -63,8 +63,8 @@ def intitial_state(q,questions):
             items=[ui.text(q.args.SearchBox)]
             
         )
-        query=obj.user_answer_gen(questions,q.args.SearchBox)
-        # print(query)
+        query=obj.user_answer_gen(q.args.SearchBox)
+        print(query)
         df= dataframe(query)
         
         q.page['table_view']=ui.form_card(
