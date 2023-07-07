@@ -10,22 +10,22 @@ obj=OpenAi()
 
 datafrm=retrieve()
 
-if os.path.exists(QUESTION_SET_FILE_PATH)==False:
-    questions=obj.question_gen()
-    with open(QUESTION_SET_FILE_PATH, 'w') as file:
-        file.write(questions)
-else:
-    with open(QUESTION_SET_FILE_PATH, 'r') as file:
-        questions=file.read()
-        # print(questions)
+# if os.path.exists(QUESTION_SET_FILE_PATH)==False:
+#     questions=obj.question_gen()
+#     with open(QUESTION_SET_FILE_PATH, 'w') as file:
+#         file.write(questions)
+# else:
+#     with open(QUESTION_SET_FILE_PATH, 'r') as file:
+#         questions=file.read()
+#         # print(questions)
 
 @app('/')
 async def serve(q: Q):
-    intitial_state(q,questions)
+    intitial_state(q)
     await q.page.save()
 
 
-def intitial_state(q,questions):
+def intitial_state(q):
     q.page['meta'] = ui.meta_card(
         box='',
         layouts=[

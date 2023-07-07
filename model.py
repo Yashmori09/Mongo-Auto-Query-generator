@@ -19,36 +19,36 @@ class OpenAi(SchemaGen):
         return response.choices[0].message["content"]
     
 
-    def question_gen(self):
-        schema=self.schema()
-        bson=["Double","String","Object","Array","Binary data","ObjectId","Boolean","Date",'Null','Regular Expression','JavaScript','32-bit integer','Timestamp','64-bit integer','Decimal128','Min key','Maxkey']
-        system=f"""
-        You are a mongodb expert who gives logically and syntatically correct mongodb query.  
-        """
-        information=f"""
-        The given {schema} represents a MongoDB schema, where 'title' refers to the name of the collection. The 'required' field specifies the necessary columns for the collection, and the 'properties' field defines the names of the columns along with their corresponding BSON types, represented as {bson}.
-        If the BSON type is 'array', the 'arraytype' field indicates the type of elements present within the array. If the BSON type is 'dict', there are additional fields. These details include the 'dictrequired' field, which lists the required fields within the dictionary, and the 'dictproperties' field, which outlines the types of the fields.
-        This dictionary structure within the schema acts as a nested schema. The more layers of nested dictionaries there are, the more information it conveys about the data entry.
-        """
-        user=f"""
+    # def question_gen(self):
+    #     schema=self.schema()
+    #     bson=["Double","String","Object","Array","Binary data","ObjectId","Boolean","Date",'Null','Regular Expression','JavaScript','32-bit integer','Timestamp','64-bit integer','Decimal128','Min key','Maxkey']
+    #     system=f"""
+    #     You are a mongodb expert who gives logically and syntatically correct mongodb query.  
+    #     """
+    #     information=f"""
+    #     The given {schema} represents a MongoDB schema, where 'title' refers to the name of the collection. The 'required' field specifies the necessary columns for the collection, and the 'properties' field defines the names of the columns along with their corresponding BSON types, represented as {bson}.
+    #     If the BSON type is 'array', the 'arraytype' field indicates the type of elements present within the array. If the BSON type is 'dict', there are additional fields. These details include the 'dictrequired' field, which lists the required fields within the dictionary, and the 'dictproperties' field, which outlines the types of the fields.
+    #     This dictionary structure within the schema acts as a nested schema. The more layers of nested dictionaries there are, the more information it conveys about the data entry.
+    #     """
+    #     user=f"""
         
-        You need to create 20 different complex questions which can be answered by mongodb query.
-        You will be provided by a schema of database and along with some terminology of schema{information}.you have to use all the mongodb functions to generate the complex questions and answer.
-        the syntax and the logic of the answer to solve the generated  question should be very much perfect. Use all the collections given in schema to generate the questions. 
-        provide the answer in following format:
-        Q1:
-        A1:
-        where Q1 is the question generated and 
-        A1 should be the mongodb compass query with proper syntax and logic
+    #     You need to create 20 different complex questions which can be answered by mongodb query.
+    #     You will be provided by a schema of database and along with some terminology of schema{information}.you have to use all the mongodb functions to generate the complex questions and answer.
+    #     the syntax and the logic of the answer to solve the generated  question should be very much perfect. Use all the collections given in schema to generate the questions. 
+    #     provide the answer in following format:
+    #     Q1:
+    #     A1:
+    #     where Q1 is the question generated and 
+    #     A1 should be the mongodb compass query with proper syntax and logic
 
-        """
-        messages = [
-            {'role': 'system', 'content': system},
-            {'role': 'user', 'content': user}
-        ]
+    #     """
+    #     messages = [
+    #         {'role': 'system', 'content': system},
+    #         {'role': 'user', 'content': user}
+    #     ]
 
-        response = self.get_completion(messages)
-        return response
+    #     response = self.get_completion(messages)
+    #     return response
     
     def user_answer_gen(self,question):
         aggregation_functions = [
