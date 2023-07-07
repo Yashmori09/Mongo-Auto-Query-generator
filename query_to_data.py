@@ -16,10 +16,10 @@ class retrieve(OpenAi,MongoDB):
 
         
         final_query='self.'+ result
-        # print(final_query)
-        despace=final_query.replace(" ","")
+        print(final_query)
+        # despace=final_query.replace(" ","")
         # print(despace)
-        data=list(eval(despace))
+        data=list(eval(final_query))
         return data
 
 # if __name__=='__main__':
